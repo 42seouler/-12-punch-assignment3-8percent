@@ -5,14 +5,10 @@ import {
   UseGuards,
   Request,
   Body,
-  Patch,
-  Param,
-  Delete,
   Query,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
-import { UpdateRecordDto } from './dto/update-record.dto';
 import { FindAllDto } from './dto/find-all-record.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
