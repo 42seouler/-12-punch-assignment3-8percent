@@ -10,11 +10,11 @@ import { RecordsModule } from './records/records.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      useFactory: async () =>
-        Object.assign(await getConnectionOptions(), {
-          autoLoadEntities: true,
-        }),
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: './db/8percent.db',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
     }),
     AuthModule,
     UsersModule,

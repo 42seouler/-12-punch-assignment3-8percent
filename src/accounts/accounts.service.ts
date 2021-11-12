@@ -41,19 +41,19 @@ export class AccountsService {
     }
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all accounts`;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} account`;
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
+  async update(id: number, updateAccountDto: UpdateAccountDto) {
     return `This action updates a #${id} account`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} account`;
   }
 }
