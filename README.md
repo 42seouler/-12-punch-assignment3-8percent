@@ -20,7 +20,7 @@
 | ------ | ----------------------------------------------- | --------- | -------- |
 | 김남형 | [42seouler](https://github.com/)                |           |          |
 | 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API |          |
-| 김요셉 | [kim-jos](https://github.com/kim-jos)           |           |          |
+| 김요셉 | [kim-jos](https://github.com/kim-jos)           | 유닛테스트 작성, DB설계     |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     | 입금,출금 API |          |
 
