@@ -11,7 +11,7 @@ import { User } from '../../users/entities/user.entity';
 @Entity()
 export class Account {
   @PrimaryColumn()
-  account: number;
+  accountNum: number;
 
   @Column({
     default: 0,
