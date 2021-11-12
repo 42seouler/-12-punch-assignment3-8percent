@@ -1,9 +1,13 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Account } from '../../accounts/entities/account.entity';
+import { Column, ManyToOne, Index, Entity, JoinColumn, PrimaryColumn } from 'typeorm'
 
 @Entity()
+@Index(['account', 'date'])
 export class Record {
+
   @PrimaryColumn({ type: 'unsigned big int' })
-  // @ManyToOne()
+  @ManyToOne(() => Account, { createForeignKeyConstraints: false })
+  @JoinColumn({ name: 'account', referencedColumnName: 'account' })
   account: number;
 
   @PrimaryColumn()
