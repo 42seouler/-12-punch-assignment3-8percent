@@ -19,9 +19,9 @@ export class CreateRecordDto {
   @Min(0)
   recordAmount: number;
 
-  @IsNotEmpty()
-  @IsEnum(RecordType)
-  recordType: RecordType;
+  // @IsNotEmpty()
+  // @IsEnum(RecordType)
+  // recordType: RecordType;
 
   @IsOptional()
   @IsString()

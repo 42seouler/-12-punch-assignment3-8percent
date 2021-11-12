@@ -21,11 +21,16 @@ export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Body() createRecordDto: CreateRecordDto, @Request() req) {
-    return this.recordsService.create(createRecordDto, req.user);
+  @Post('deposit')
+  createDeposit(@Body() createRecordDto: CreateRecordDto, @Request() req) {
+    return this.recordsService.createDeposit(createRecordDto, req.user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('withdraw')
+  createWithdraw(@Body() createRecordDto: CreateRecordDto, @Request() req) {
+    return this.recordsService.createWithdraw(createRecordDto, req.user);
+  }
   @Get()
   findAll(@Query() findAllDto: FindAllDto) {
     return this.recordsService.findAll(findAllDto);
