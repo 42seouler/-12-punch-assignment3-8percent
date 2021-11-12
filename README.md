@@ -22,7 +22,7 @@
 | 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           |           |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
-| 최유진 | [n12seconds](https://github.com/n12seconds)     |           |          |
+| 최유진 | [n12seconds](https://github.com/n12seconds)     | 입금,출금 API |          |
 
 </div>
 
@@ -177,6 +177,16 @@
 <br>
 <br>
 
+## API Test 방법
+
+1. 다음 링크로 이동합니다. [swagger 링크](http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/)
+2. user 탭의 회원가입, auth 탭의 로그인 요청을 통하여 accessToken을 획득합니다.
+3. 권한이 필요한 api는 별도의 자물쇠 아이콘이 표기되어 있습니다. 자물쇠 아이콘을 클릭한 후, 로그인 시 획득한 accessToken을 입력하면 해당 api를 요청할 수 있습니다.</br>
+<img src="https://user-images.githubusercontent.com/42341135/141495860-824c8656-ce8d-438b-ab5d-0f94768d6b65.PNG" width="500"/> </br>
+<br>
+<br>
+
+
 ## 📌 구현 기능
 
 <br>
@@ -216,25 +226,18 @@ PK로 선택한 계좌번호의 중복을 피할 수 없어서 같은 계좌번�
 @Index(['account', 'date'])
 ```
 
-### API Test 방법
 
-1. 다음 링크로 이동합니다. [swagger 링크](http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/)
-2. user 탭의 회원가입, auth 탭의 로그인 요청을 통하여 accessToken을 획득합니다.
-3. 권한이 필요한 api는 별도의 자물쇠 아이콘이 표기되어 있습니다. 자물쇠 아이콘을 클릭한 후, 로그인 시 획득한 accessToken을 입력하면 해당 api를 요청할 수 있습니다.</br>
-<img src="https://user-images.githubusercontent.com/42341135/141495860-824c8656-ce8d-438b-ab5d-0f94768d6b65.PNG" width="500"/> </br>
-<br>
-<br>
 
-# DB 거래내역 1억건 가정 상황에서 대응
+### DB 거래내역 1억건 가정 상황에서 대응
 
-# 무결성 보장을 위한 격리 수준은 SERIALIZABLE!
+### 무결성 보장을 위한 격리 수준은 SERIALIZABLE!
 
 SQLite의 기본 격리 수준은 SERIALIZABLE입니다. SQLite는 실제로 쓰기를 직렬화하여 직렬화 가능한 트랜잭션을 구현합니다.
-격리 수준을 설정하는 것에서 가장 큰 고민과 시간을 들이게 되었습니다. 동시성을 위해 격리 수준을 낮추는 것을 고려해봤지만 금융거래에서 가장 큰 치명적인 이슈를 데이터의 무결성이라고 생각했습니다. 아래와 같은 읽기-쓰기, 쓰기-읽기, 쓰기-쓰기 충돌로 인한 데데이터 무결성이 동시성보다 우선되어야 한다고 생각되어 시리얼라이저블을 선택하게 되었습니다.
-![](https://images.velog.io/images/42seouler/post/9f252869-8d90-47f5-9f8e-86cb38269c10/image.png)
+격리 수준을 설정하는 것에서 가장 큰 고민과 시간을 들이게 되었습니다. 동시성을 위해 격리 수준을 낮추는 것을 고려해봤지만 금융거래에서 가장 큰 치명적인 이슈를 데이터의 무결성이라고 생각했습니다. 아래와 같은 읽기-쓰기, 쓰기-읽기, 쓰기-쓰기 충돌로 인한 데데이터 무결성이 동시성보다 우선되어야 한다고 생각되어 시리얼라이저블을 선택하게 되었습니다.</br>
+<img src="https://images.velog.io/images/42seouler/post/9f252869-8d90-47f5-9f8e-86cb38269c10/image.png" width="500"/> </br>
 
 
-# DB분산 처리를 위해 나눠보자!
+### DB분산 처리를 위해 나눠보자!
 
 이번 과제에서는 거래내역 1억건 이상이라는 가정이 있었고 이에 따라 하나의 디비에 데이터를 저장하게 되면 아래와 같은 이슈를 만날 수 있다고 판단 했습니다.
 - CRUD속도 
@@ -243,10 +246,9 @@ SQLite의 기본 격리 수준은 SERIALIZABLE입니다. SQLite는 실제로 쓰
 그래서 디비를 분산 저장하기 위해 모듈러샤딩을 고려하고 적용하게 되었습니다.
 
 요구 사항
-- 라우팅 구분을 위해 유저 PK를 샤딩을 위해 사용합니다.
+- 라우팅 구분을 위해 유저 PK를 샤딩을 위해 사용합니다.</br>
 
-
-![](https://images.velog.io/images/42seouler/post/b93eeec3-1bf7-411b-b1f0-be5423520863/image.png)
+<img src="https://images.velog.io/images/42seouler/post/b93eeec3-1bf7-411b-b1f0-be5423520863/image.png" width="500"/> </br>
 
 모듈러 샤딩을 사용해서 얻게 되는 이점과 단점
 - 데이터 균등 분배
@@ -254,21 +256,19 @@ SQLite의 기본 격리 수준은 SERIALIZABLE입니다. SQLite는 실제로 쓰
 
 예측 가능한 범위에서 분산처리 할 데이터베이스를 미리 정하고 그에 따라 안정적으로 분산 저장하고 디비 리소스를 잘 활용 할 수 있습니다. 과제를 위해 유저와 계좌정보를 갖고 있는 마스터 DB와 유저 아이디를 기반으로 한 홀수, 짝수 두개의 디비에 분산 저장하기로 했습니다.
 
-# 분산 저장 된 계좌번호에 Index
+### 분산 저장 된 계좌번호에 Index
 아무리 분산 저장되어 하나의 DB에 저장된 데이터가 적다하더라도 결국 검색 과정에서 풀 스캔 하게 됩니다.
 하지만 다행히 sqlite는 인덱싱을 지원합니다. 따라서 효율성을 높이기 위해 쿼리 빈도가 높은 필드인 계좌번호에 인덱싱을 했습니다.
 
-# 무결성을 보존하기 위한 로직
+### 무결성을 보존하기 위한 로직 </br>
+<img src="https://images.velog.io/images/42seouler/post/b93eeec3-1bf7-411b-b1f0-be5423520863/image.png" width="500"/> </br>
 
-![](https://images.velog.io/images/42seouler/post/025b8082-8321-4afd-83a0-f8f9df3b9b6d/image.png)
-
-# 하지만 실제 구현은!
-
-![](https://images.velog.io/images/42seouler/post/a41aa83f-399c-40be-8f46-5a8ff2a956fb/image.png)
+### 하지만 실제 구현은! </br>
+<img src="https://images.velog.io/images/42seouler/post/a41aa83f-399c-40be-8f46-5a8ff2a956fb/image.png" width="500"/> </br>
 
 마스터 트랜잭션 과정 중에 로그를 남기고 그 로그를 통해 입출금 내역의 동기화를 시도하려고 했으나 시간이 부족했습니다.
 분산 데이터 저장, 디비격리 수준, 멀티 데이터베이스 설정 등 부족한 지식을 채우면서 정말 이렇게 구현하는게 맞을까? 옳은 판단인지 정보를 수집하고 실험하는데 시간을 사용하게 되었습니다.
-
+<br/><br/>
 
 ## 🪄 설치 및 실행 방법
 
@@ -287,121 +287,23 @@ $ cd 12-punch-assignment4-8percent
 $ npm install
 ```
 
-<span style="color:red"><b>[수정]</b> 3. src 폴더에 .env 파일을 만들어 환경변수를 설정합니다.</span>
 
-- [.env설정 노션 링크]()
-- <details><summary><b>링크 접속불가 시 .env 파일 설정 방법</b></summary>
-
-  ```
-  MONGO_URL= 'db 주소'
-  PORT= '서버의 포트'
-  JWT_SECERT= '원하는 시크릿코드'
-  JWT_ALGO="HS256"
-  ```
-
-</details>
-
-4. 서버를 구동합니다.
+3. 서버를 구동합니다.
 
 ```bash
 $ npm start
 ```
 
-<span style="color:red"><b>[수정]</b>5. Unit test 및 End-to-End test를 진행합니다.</span>
-
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
 ```
 
-</br>
-</br>
-
-## 😺 컨벤션 설정
-
-</br>
-</br>
-
-## 🛠 Dependencies
-
-</br>
-
-<div align=center>
-
-</div>
-
-</br>
-</br>
-
-## 🌲 File Tree
-
-```
-
-📦 12-punch-assignment4-8percent
- ├─📂 src
- │  ├─📂 auth
- │  │  ├─📂 guards
- │  │  │  ├─📄 jwt-auth.guard.ts
- │  │  │  └─📄local-auth.guard.ts
- │  │  ├─📂 strategies
- │  │  │  ├─📄 jwt.strategy.ts
- │  │  │  ├─📄 local.strategy.ts
- │  │  │  └─📄 role.guard.ts
- │  │  ├─📄 auth.module.ts
- │  │  ├─📄 auth.service.spec.ts
- │  │  ├─📄 auth.service.ts
- │  │  └─📄 constants.ts
- │  ├─📂 common
- │  │  └─📄 base-common.entity.ts
- │  ├─📂 decorators
- │  │  └─📄 roles.decorator.ts
- │  ├─📂 enums
- │  │  └─📄 user.role.enum.ts
- │  ├─📂 users
- │  │  ├─📂 dto
- │  │  │  ├─📄 create-user.dto.spec.ts
- │  │  │  ├─📄 create-user.dto.ts
- │  │  │  ├─📄 login-user.dto.ts
- │  │  │  ├─📄 read-user.dto.ts
- │  │  │  └─📄 update-user.dto.ts
- │  │  ├─📄 user.entity.ts
- │  │  ├─📄 users.controller.spec.ts
- │  │  ├─📄 users.controller.ts
- │  │  ├─📄 users.module.ts
- │  │  ├─📄 users.repository.spec.ts
- │  │  ├─📄 users.repository.ts
- │  │  ├─📄 users.service.spec.ts
- │  │  └─📄 users.service.ts
- │  ├─📄 app.controller.spec.ts
- │  ├─📄 app.controller.ts
- │  ├─📄 app.module.ts
- │  ├─📄 app.service.ts
- │  └─📄 main.ts
- ├─📂 test
- │  ├─📄 app.e2e-spec.ts
- │  └─📄 jest-e2e.json
- ├─📄 .eslintrc.js
- ├─📄 .gitignore
- ├─📄 .prettierrc
- ├─📄 README.MD
- ├─📄 docker-compose.yml
- ├─📄 nest-cli.json
- ├─📄 ormconfig.json
- ├─📄 package-lock.json
- ├─📄 package.json
- ├─📄 tsconfig.build.json
- └─📄 tsconfig.json
-
-```
-
-<br>
-<br>
+<br/>
+<br/>
 
 ## Reference
 
