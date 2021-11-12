@@ -19,11 +19,7 @@ export class AccountsController {
 
   @Post()
   create(@Body() createAccountDto: CreateAccountDto) {
-    const save = {
-      account: createAccountDto.account,
-      balance: 0, // 초기 계좌 잔액 0원
-    };
-    return this.accountsService.create(save);
+    return this.accountsService.create(createAccountDto);
   }
 
   @Get()
