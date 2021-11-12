@@ -6,7 +6,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { RecordType } from 'src/enums/record.type.enum';
+import { RecordType } from '../../enums/record.type.enum';
 
 export class CreateRecordDto {
   @IsNotEmpty()

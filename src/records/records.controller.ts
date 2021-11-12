@@ -20,7 +20,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createRecordDto: CreateRecordDto, @Request() req) {
     return this.recordsService.create(createRecordDto, req.user);
@@ -28,6 +28,7 @@ export class RecordsController {
 
   @Get()
   findAll(@Query() findAllDto: FindAllDto) {
+    console.log('findallDto', findAllDto);
     return this.recordsService.findAll(findAllDto);
 
   }

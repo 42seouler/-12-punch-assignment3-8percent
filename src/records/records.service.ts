@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException, PreconditionFailedException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from 'src/accounts/entities/account.entity';
-import { RecordOrder } from 'src/enums/record.order.enum';
-import { RecordType } from 'src/enums/record.type.enum';
+import { Account } from '../accounts/entities/account.entity';
+import { RecordOrder } from '../enums/record.order.enum';
+import { RecordType } from '../enums/record.type.enum';
 import { Repository,Connection } from 'typeorm';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { FindAllDto } from './dto/find-all-record.dto';
@@ -41,31 +41,33 @@ export class RecordsService {
 
       if(!existingAccount) {
         throw new NotFoundException(`Account with ${account} not found`);
-      }else{     
-          if(recordType==RecordType.deposit) {            
-            existingAccount.balance = existingAccount.balance+recordAmount;   
-          }else if(recordType==RecordType.withdraw){   
-            //잔액 검사     
-            if(existingAccount.balance >= recordAmount){ 
-              existingAccount.balance = existingAccount.balance-recordAmount; 
-            }else{ 
-              throw new PreconditionFailedException('insufficient balance');
-            }    
+      } else {     
+          if(recordType == RecordType.deposit) {
+            existingAccount.balance = existingAccount.balance + recordAmount;   
           }
+          
+          else if (recordType == RecordType.withdraw) {   
+            //잔액 검사     
+            if(existingAccount.balance >= recordAmount)  
+              existingAccount.balance = existingAccount.balance - recordAmount; 
+            else
+              throw new PreconditionFailedException('insufficient balance');
+          }
+
           const savedAccount = await queryRunner.manager
-          .getRepository(Account)
-          .save(existingAccount);
+            .getRepository(Account)
+            .save(existingAccount);
 
           const record = queryRunner.manager.getRepository(Record).create({
             ...createRecordDto,
-            balance : savedAccount.balance,
-            note : createRecordDto.note?  createRecordDto.note : '',
-            date: new Date()
+            balance: savedAccount.balance,
+            note: createRecordDto.note || '',
+            date: new Date(Date.now())
           });
 
           const createdRecord = await queryRunner.manager
-          .getRepository(Record)
-          .save(record);
+            .getRepository(Record)
+            .save(record);
           
           await queryRunner.commitTransaction();
           return createdRecord;
@@ -76,20 +78,6 @@ export class RecordsService {
     } finally {
       await queryRunner.release();
     }  
-
-    // let { account, recordAmount, recordType, note } = createRecordDto;
-    // note = note || '';
-    
-    // const record = await this.recordRepository.create({
-    //   account,
-    //   recordAmount,
-    //   recordType,
-    //   note,
-    //   balance: myAccount.balance,
-    // });
-
-    // await this.recordRepository.save(record);
-    // return record;
 
   }
 
