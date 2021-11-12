@@ -25,8 +25,10 @@ export class RecordsService {
     private connection: Connection,
   ) {}
 
-  async createDeposit(createRecordDto: CreateRecordDto, user: any): Promise<Record> {
-    
+  async createDeposit(
+    createRecordDto: CreateRecordDto,
+    user: any,
+  ): Promise<Record> {
     let { account, recordAmount, note } = createRecordDto;
     note = note || '';
 
@@ -35,101 +37,100 @@ export class RecordsService {
       where: { accountNum: account, userId: user.userId },
     });
 
-    if(!myAccount) throw new UnauthorizedException('본인확인 실패');
-
-    const queryRunner = this.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-
-    try {      
-        
-      myAccount.balance = myAccount.balance+recordAmount;   
-      
-      const savedAccount = await queryRunner.manager
-      .getRepository(Account)
-      .save(myAccount);
-
-      const record = queryRunner.manager.getRepository(Record).create({
-        ...createRecordDto,
-        balance : savedAccount.balance,
-        note : note,
-        recordType : RecordType.deposit,
-        date: new Date()
-      });
-
-      const createdRecord = await queryRunner.manager
-      .getRepository(Record)
-      .save(record);
-      
-      await queryRunner.commitTransaction();
-      return createdRecord;
-     
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
-
-  }
-
-  
-  async createWithdraw(createRecordDto: CreateRecordDto, user: any): Promise<Record> {
-    
-    let { account, recordAmount, note } = createRecordDto;
-    note = note || '';
-
-    //계좌인증
-    let myAccount = await this.accountRepository.findOne({
-      where: { accountNum: account, userId: user.userId },
-    });
-    if(!myAccount) throw new UnauthorizedException('본인확인 실패');
+    if (!myAccount) throw new UnauthorizedException('본인확인 실패');
 
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
+      myAccount.balance = myAccount.balance + recordAmount;
 
-        //잔액 검사     
-        if(myAccount.balance >= recordAmount){ 
-          myAccount.balance = myAccount.balance-recordAmount; 
-        }else{ 
-          throw new PreconditionFailedException('insufficient balance');
-        }    
-        
-        const savedAccount = await queryRunner.manager
+      const savedAccount = await queryRunner.manager
         .getRepository(Account)
         .save(myAccount);
 
-        const record = queryRunner.manager.getRepository(Record).create({
-          ...createRecordDto,
-          balance : savedAccount.balance,
-          note : note,
-          recordType : RecordType.withdraw,
-          date: new Date()
-        });
+      const record = queryRunner.manager.getRepository(Record).create({
+        ...createRecordDto,
+        balance: savedAccount.balance,
+        note: note,
+        recordType: RecordType.deposit,
+        date: new Date(),
+      });
 
-        const createdRecord = await queryRunner.manager
+      const createdRecord = await queryRunner.manager
         .getRepository(Record)
         .save(record);
-        
-        await queryRunner.commitTransaction();
-        return createdRecord;
-    
+
+      await queryRunner.commitTransaction();
+      return createdRecord;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
     } finally {
       await queryRunner.release();
-    }  
+    }
+  }
 
+  async createWithdraw(
+    createRecordDto: CreateRecordDto,
+    user: any,
+  ): Promise<Record> {
+    let { account, recordAmount, note } = createRecordDto;
+    note = note || '';
+
+    //계좌인증
+    let myAccount = await this.accountRepository.findOne({
+      where: { accountNum: account, userId: user.userId },
+    });
+    if (!myAccount) throw new UnauthorizedException('본인확인 실패');
+
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      //잔액 검사
+      if (myAccount.balance >= recordAmount) {
+        myAccount.balance = myAccount.balance - recordAmount;
+      } else {
+        throw new PreconditionFailedException('insufficient balance');
+      }
+
+      const savedAccount = await queryRunner.manager
+        .getRepository(Account)
+        .save(myAccount);
+
+      const record = queryRunner.manager.getRepository(Record).create({
+        ...createRecordDto,
+        balance: savedAccount.balance,
+        note: note,
+        recordType: RecordType.withdraw,
+        date: new Date(),
+      });
+
+      const createdRecord = await queryRunner.manager
+        .getRepository(Record)
+        .save(record);
+
+      await queryRunner.commitTransaction();
+      return createdRecord;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll(findAllDto: FindAllDto, user: any) {
     let { limit, offset, account, from, to, year, month, type, order } =
       findAllDto;
+
+    const query = this.recordRepository
+      .createQueryBuilder('record')
+      .where({ account: account });
+
     limit = limit || 2;
     offset = offset || 1;
     order = order || RecordOrder.recent;
@@ -138,19 +139,13 @@ export class RecordsService {
     const myAccount = await this.accountRepository.findOne({
       where: { accountNum: account, userId: user.userId },
     });
-    if (!myAccount) throw new UnauthorizedException('본인확인 실패');
 
-    const query = this.recordRepository
-      .createQueryBuilder('record')
-      .where({ account: account });
+    if (!myAccount) throw new UnauthorizedException('본인확인 실패');
+    console.log(user);
 
     if (from && to) {
-      // query
-      //   .andWhere(`Date(record.date) >= :Date(from)`)
-      //   .andWhere(`Date(record.date) <= :Date(to)`);
-      query.andWhere(
-        `Date(record.date) >= Date(${from}) AND Date(record.date) <= Date(${to})`,
-      );
+      query.where('Date(date) >= :from', { from: from });
+      query.andWhere('Date(date) <= :to', { to: to });
     }
 
     if (year && month) {

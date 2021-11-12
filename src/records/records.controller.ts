@@ -33,10 +33,10 @@ export class RecordsController {
   }
 
   @ApiOperation({ summary: '거래내역 조회' })
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() findAllDto: FindAllDto) {
+  findAll(@Query() findAllDto: FindAllDto, @Request() req) {
     console.log('findallDto', findAllDto);
-    return this.recordsService.findAll(findAllDto);
-
+    return this.recordsService.findAll(findAllDto, req.user);
   }
 }
