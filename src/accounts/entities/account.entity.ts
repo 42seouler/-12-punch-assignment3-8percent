@@ -3,20 +3,22 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Account {
-  @PrimaryColumn({ type: 'unsigned big int' })
-  account: number;
+  @PrimaryColumn()
+  accountNum: number;
 
-  @Column({ type: 'unsigned big int' })
+  @Column()
   balance: number;
 
-  /*  @ManyToOne(() => User, (user) => user.id)
-  userId: number;*/
+  @ManyToOne(() => User, (user) => user.id)
+  userId: number;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

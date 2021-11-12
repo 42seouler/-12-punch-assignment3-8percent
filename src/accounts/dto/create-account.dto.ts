@@ -1,7 +1,14 @@
-import { IsNumber, Min } from 'class-validator';
+import { Column, ManyToOne } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAccountDto {
   @IsNumber()
-  @Min(0)
-  account: number;
+  @ApiProperty()
+  accountNum: number;
+
+  @IsNumber()
+  @ApiProperty()
+  userId: number;
 }
