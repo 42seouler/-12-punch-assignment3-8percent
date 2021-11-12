@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
 import { Connection } from 'typeorm';
 import { AccountsRepository } from './accounts.repository';
 import { Account } from './entities/account.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AccountsService {
@@ -12,11 +12,19 @@ export class AccountsService {
     private readonly accountsRepository: AccountsRepository,
   ) {}
 
-  async create(createAccountDto: CreateAccountDto) {
+  async create(createAccountDto: CreateAccountDto, user: any) {
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+    console.log(user);
     try {
+      // 유저 존재 여부 확인
+      const existingUser = await queryRunner.manager
+        .getRepository(User)
+        .findOne(user.userId);
+      if (!existingUser) {
+        throw new UnauthorizedException('존재하지 않는 유저입니다');
+      }
       // 계좌 존재 여부 확인
       const existingAccount = await queryRunner.manager
         .getRepository(Account)
@@ -26,13 +34,13 @@ export class AccountsService {
       }
       const account = queryRunner.manager.getRepository(Account).create({
         ...createAccountDto,
-        balance: 1,
+        userId: user.userId,
       });
       const createdAccount = await queryRunner.manager
         .getRepository(Account)
         .save(account);
       await queryRunner.commitTransaction();
-      return createdAccount.accountNum;
+      return createdAccount;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw error;
@@ -42,18 +50,6 @@ export class AccountsService {
   }
 
   async findAll() {
-    return `This action returns all accounts`;
-  }
-
-  async findOne(id: number) {
-    return `This action returns a #${id} account`;
-  }
-
-  async update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
-  }
-
-  async remove(id: number) {
-    return `This action removes a #${id} account`;
+    return this.accountsRepository.find();
   }
 }

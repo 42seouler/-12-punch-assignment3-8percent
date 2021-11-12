@@ -1,20 +1,21 @@
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryColumn,
-  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Account {
   @PrimaryColumn()
   accountNum: number;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   balance: number;
 
   @ManyToOne(() => User, (user) => user.id)
