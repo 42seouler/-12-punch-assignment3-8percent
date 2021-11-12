@@ -7,7 +7,7 @@ import {
   Min,
 } from 'class-validator';
 import { RecordType } from 'src/enums/record.type.enum';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty,ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateRecordDto {
 
@@ -27,7 +27,7 @@ export class CreateRecordDto {
   // @IsEnum(RecordType)
   // recordType: RecordType;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   note: string;
