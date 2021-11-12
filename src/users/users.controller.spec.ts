@@ -46,7 +46,7 @@ describe('UsersController', () => {
     controller.update(paramId, request);
     expect(service.update).toBeCalled();
   });
-  
+
   it('should call the remove method', () => {
     controller.remove(paramId);
     expect(service.remove).toBeCalled();
