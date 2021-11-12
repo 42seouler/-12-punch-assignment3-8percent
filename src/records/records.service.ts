@@ -17,8 +17,24 @@ export class RecordsService {
     private readonly accountRepository: Repository<Account>,
   ) {}
 
-  async create(createRecordDto: CreateRecordDto) {
-    return '';
+  async create(createRecordDto: CreateRecordDto): Promise<Record> {
+    let { account, recordAmount, recordType, note } = createRecordDto;
+    note = note || '';
+
+    const myAccount = await this.accountRepository.findOne({
+      where: { accountNum: account },
+    });
+
+    const record = await this.recordRepository.create({
+      account,
+      recordAmount,
+      recordType,
+      note,
+      balance: myAccount.balance,
+    });
+
+    await this.recordRepository.save(record);
+    return record;
   }
 
   // 소유주 인증 필요
