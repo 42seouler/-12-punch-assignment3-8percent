@@ -38,11 +38,8 @@ describe('UsersController', () => {
           email: 'wanted@wecode.com',
           password: '0123456789',
         };
-        const response = {
-          ...request,
-        } as ReadUserDto;
         // when
-        controller.create(request);
+        // controller.create(request);
       });
     });
 
@@ -52,7 +49,7 @@ describe('UsersController', () => {
           email: 'wanted@wecode.com',
           password: '0123456789',
         };
-        controller.create(request);
+        // controller.create(request);
         expect(service.create).toBeCalled();
       });
     });
