@@ -19,7 +19,7 @@
 | 이름   | github                                          | 담당 기능 | TIL/회고 |
 | ------ | ----------------------------------------------- | --------- | -------- |
 | 김남형 | [42seouler](https://github.com/)                |           |          |
-| 김서경 | [riley909](https://github.com/riley909)         |           |          |
+| 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           |           |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     |           |          |
@@ -132,11 +132,12 @@
 
 ## 🛠 사용 기술 및 Tools
 
-### [Back-End]
+### [Back-End] ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 
-### [Deploy]
+### [Deploy] <img src="https://img.shields.io/badge/AWS_EC2-232F3E?style=for-the-badge&logo=Amazon&logoColor=white"/>
 
-### [Etc.]
+### [Etc.] <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
+
 
 <br>
 <br>
@@ -173,7 +174,10 @@
 | recordType   | 출/입금    | CHAR(2)     | NotNull  | MySQL 환경에서는 enum 타입이지만 SQLite 환경에서는 enum 타입이 불가능하여 '출금', '입금' 2개의 단어만을 받을 수 있는 크기 설정.
 | note         | 적요    | VARCHAR(7)   |         | 실제 은행들에서 최대 7글자만 기록한다는 것을 보고 최대 크기를 정함.
 
-##📌 구현 기능
+<br>
+<br>
+
+## 📌 구현 기능
 
 <br>
 <br>
