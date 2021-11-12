@@ -39,7 +39,6 @@ export class RecordsController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() findAllDto: FindAllDto, @Request() req) {
-    console.log('findallDto', findAllDto);
     return this.recordsService.findAll(findAllDto, req.user);
   }
 }

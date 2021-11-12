@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { RecordOrder } from '../../enums/record.order.enum';
 import { RecordType } from '../../enums/record.type.enum';
+import { ApiQuery } from '@nestjs/swagger';
 
 export class FindAllDto {
   @IsOptional()

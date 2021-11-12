@@ -1,19 +1,21 @@
 import {
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   PreconditionFailedException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { Account } from 'src/accounts/entities/account.entity';
 import { RecordOrder } from 'src/enums/record.order.enum';
 import { RecordType } from 'src/enums/record.type.enum';
-import { User } from 'src/users/entities/user.entity';
 import { Repository, Connection } from 'typeorm';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { FindAllDto } from './dto/find-all-record.dto';
 import { Record } from './entities/record.entity';
+import {
+  TRANSACTION_EVEN_DB_CONNECTION,
+  TRANSACTION_ODD_DB_CONNECTION,
+} from '../distributedData';
 
 @Injectable()
 export class RecordsService {
@@ -23,6 +25,10 @@ export class RecordsService {
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
     private connection: Connection,
+    @InjectConnection(TRANSACTION_ODD_DB_CONNECTION)
+    private connectionODD: Connection,
+    @InjectConnection(TRANSACTION_EVEN_DB_CONNECTION)
+    private connectionEVEN: Connection,
   ) {}
 
   async createDeposit(
@@ -33,42 +39,58 @@ export class RecordsService {
     note = note || '';
 
     //계좌인증
-    let myAccount = await this.accountRepository.findOne({
+    const myAccount = await this.accountRepository.findOne({
       where: { accountNum: account, userId: user.userId },
     });
 
     if (!myAccount) throw new UnauthorizedException('본인확인 실패');
-
+    // 마스터 DB 트랜잭션
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
       myAccount.balance = myAccount.balance + recordAmount;
-
-      const savedAccount = await queryRunner.manager
-        .getRepository(Account)
-        .save(myAccount);
-
-      const record = queryRunner.manager.getRepository(Record).create({
-        ...createRecordDto,
-        balance: savedAccount.balance,
-        note: note,
-        recordType: RecordType.deposit,
-        date: new Date(),
-      });
-
-      const createdRecord = await queryRunner.manager
-        .getRepository(Record)
-        .save(record);
-
+      await queryRunner.manager.getRepository(Account).save(myAccount);
       await queryRunner.commitTransaction();
-      return createdRecord;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
     } finally {
       await queryRunner.release();
+
+      // 분산 저장을 위한 모듈러 연산
+      let connection;
+      if (user.userId % 2) {
+        connection = this.connectionODD;
+      } else {
+        connection = this.connectionEVEN;
+      }
+
+      // 슬레이브 트랜잭션
+      const slaveQueryRunner = connection.createQueryRunner();
+      await slaveQueryRunner.connect();
+      await slaveQueryRunner.startTransaction();
+      try {
+        const record = slaveQueryRunner.manager.getRepository(Record).create({
+          ...createRecordDto,
+          balance: myAccount.balance,
+          note: note,
+          recordType: RecordType.deposit,
+          date: new Date(),
+        });
+
+        const createdRecord = await slaveQueryRunner.manager
+          .getRepository(Record)
+          .save(record);
+
+        await slaveQueryRunner.commitTransaction();
+        return createdRecord;
+      } catch (err) {
+        await slaveQueryRunner.rollbackTransaction();
+        throw err;
+      } finally {
+        await slaveQueryRunner.release();
+      }
     }
   }
 
@@ -84,42 +106,57 @@ export class RecordsService {
       where: { accountNum: account, userId: user.userId },
     });
     if (!myAccount) throw new UnauthorizedException('본인확인 실패');
-
+    //잔액 검사
+    if (myAccount.balance >= recordAmount) {
+      myAccount.balance = myAccount.balance - recordAmount;
+    } else {
+      throw new PreconditionFailedException('insufficient balance');
+    }
+    // 마스터 DB 트랜잭션
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
-      //잔액 검사
-      if (myAccount.balance >= recordAmount) {
-        myAccount.balance = myAccount.balance - recordAmount;
-      } else {
-        throw new PreconditionFailedException('insufficient balance');
-      }
-
-      const savedAccount = await queryRunner.manager
-        .getRepository(Account)
-        .save(myAccount);
-
-      const record = queryRunner.manager.getRepository(Record).create({
-        ...createRecordDto,
-        balance: savedAccount.balance,
-        note: note,
-        recordType: RecordType.withdraw,
-        date: new Date(),
-      });
-
-      const createdRecord = await queryRunner.manager
-        .getRepository(Record)
-        .save(record);
-
+      await queryRunner.manager.getRepository(Account).save(myAccount);
       await queryRunner.commitTransaction();
-      return createdRecord;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
     } finally {
       await queryRunner.release();
+    }
+
+    // 분산 저장을 위한 모듈러 연산
+    let connection;
+    if (user.userId % 2) {
+      connection = this.connectionODD;
+    } else {
+      connection = this.connectionEVEN;
+    }
+
+    // 슬레이브 DB 트랜잭션
+    const slaveQueryRunner = connection.createQueryRunner();
+    await slaveQueryRunner.connect();
+    await slaveQueryRunner.startTransaction();
+    try {
+      const record = slaveQueryRunner.manager.getRepository(Record).create({
+        ...createRecordDto,
+        balance: myAccount.balance,
+        note: note,
+        recordType: RecordType.withdraw,
+        date: new Date(),
+      });
+
+      const createdRecord = await slaveQueryRunner.manager
+        .getRepository(Record)
+        .save(record);
+      await slaveQueryRunner.commitTransaction();
+      return createdRecord;
+    } catch (err) {
+      await slaveQueryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await slaveQueryRunner.release();
     }
   }
 
@@ -127,11 +164,19 @@ export class RecordsService {
     let { limit, offset, account, from, to, year, month, type, order } =
       findAllDto;
 
-    const query = this.recordRepository
-      .createQueryBuilder('record')
+    // 분산 DB에서 찾기위한 모듈러 연산k
+    let connection;
+    if (user.userId % 2) {
+      connection = this.connectionODD;
+    } else {
+      connection = this.connectionEVEN;
+    }
+
+    const query = connection
+      .createQueryBuilder(Record, 'record')
       .where({ account: account });
 
-    limit = limit || 2;
+    limit = limit || 10;
     offset = offset || 1;
     order = order || RecordOrder.recent;
     const yearAndMonth = `${year}-${month}`;
@@ -139,9 +184,7 @@ export class RecordsService {
     const myAccount = await this.accountRepository.findOne({
       where: { accountNum: account, userId: user.userId },
     });
-
     if (!myAccount) throw new UnauthorizedException('본인확인 실패');
-    console.log(user);
 
     if (from && to) {
       query.where('Date(date) >= :from', { from: from });
