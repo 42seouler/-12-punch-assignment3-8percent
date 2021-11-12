@@ -174,7 +174,8 @@
 | recordType   | 출/입금    | CHAR(2)     | NotNull  | MySQL 환경에서는 enum 타입이지만 SQLite 환경에서는 enum 타입이 불가능하여 '출금', '입금' 2개의 단어만을 받을 수 있는 크기 설정.
 | note         | 적요    | VARCHAR(7)   |         | 실제 은행들에서 최대 7글자만 기록한다는 것을 보고 최대 크기를 정함.
 
-##📌 구현 기능
+
+## 📌 구현 기능
 
 <br>
 <br>
@@ -246,43 +247,21 @@ $ cd 12-punch-assignment4-8percent
 $ npm install
 ```
 
-<span style="color:red"><b>[수정]</b> 3. src 폴더에 .env 파일을 만들어 환경변수를 설정합니다.</span>
-
-- [.env설정 노션 링크]()
-- <details><summary><b>링크 접속불가 시 .env 파일 설정 방법</b></summary>
-
-  ```
-  MONGO_URL= 'db 주소'
-  PORT= '서버의 포트'
-  JWT_SECERT= '원하는 시크릿코드'
-  JWT_ALGO="HS256"
-  ```
-
-</details>
-
-4. 서버를 구동합니다.
+3. 서버를 구동합니다.
 
 ```bash
 $ npm start
 ```
 
-<span style="color:red"><b>[수정]</b>5. Unit test 및 End-to-End test를 진행합니다.</span>
+<span style="color:red"><b>[수정]</b>5. Unit test를 진행합니다.</span>
 
 ```bash
 # unit tests
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
 # test coverage
 $ npm run test:cov
 ```
-
-</br>
-</br>
-
-## 😺 컨벤션 설정
 
 </br>
 </br>
