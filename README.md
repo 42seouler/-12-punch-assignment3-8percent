@@ -19,7 +19,7 @@
 | 이름   | github                                          | 담당 기능 | TIL/회고 |
 | ------ | ----------------------------------------------- | --------- | -------- |
 | 김남형 | [42seouler](https://github.com/)                |           |          |
-| 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API |          |
+| 김서경 | [riley909](https://github.com/riley909)         |           |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           |           |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     |           |          |
@@ -132,11 +132,11 @@
 
 ## 🛠 사용 기술 및 Tools
 
-### [Back-End] ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
+### [Back-End]
 
-### [Deploy] <img src="https://img.shields.io/badge/AWS_EC2-232F3E?style=for-the-badge&logo=Amazon&logoColor=white"/>
+### [Deploy]
 
-### [Etc.] <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
+### [Etc.]
 
 <br>
 <br>
@@ -216,8 +216,8 @@ PK로 선택한 계좌번호의 중복을 피할 수 없어서 같은 계좌번�
 
 1. 다음 링크로 이동합니다. [swagger 링크](http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/)
 2. user 탭의 회원가입, auth 탭의 로그인 요청을 통하여 accessToken을 획득합니다.
-3. 권한이 필요한 api는 별도의 자물쇠 아이콘이 표기되어 있습니다. 자물쇠 아이콘을 클릭한 후, 로그인 시 획득한 accessToken을 입력하면 해당 api를 요청할 수 있습니다.
-<img src="https://user-images.githubusercontent.com/42341135/141495860-824c8656-ce8d-438b-ab5d-0f94768d6b65.PNG" width="700"/> </br>
+3. 권한이 필요한 api는 별도의 자물쇠 아이콘이 표기되어 있습니다. 자물쇠 아이콘을 클릭한 후, 로그인 시 획득한 accessToken을 입력하면 해당 api를 요청할 수 있습니다.</br>
+<img src="https://user-images.githubusercontent.com/42341135/141495860-824c8656-ce8d-438b-ab5d-0f94768d6b65.PNG" width="500"/> </br>
 <br>
 <br>
 
@@ -290,6 +290,70 @@ $ npm run test:cov
 
 </br>
 </br>
+
+## 🌲 File Tree
+
+```
+
+📦 12-punch-assignment4-8percent
+ ├─📂 src
+ │  ├─📂 auth
+ │  │  ├─📂 guards
+ │  │  │  ├─📄 jwt-auth.guard.ts
+ │  │  │  └─📄local-auth.guard.ts
+ │  │  ├─📂 strategies
+ │  │  │  ├─📄 jwt.strategy.ts
+ │  │  │  ├─📄 local.strategy.ts
+ │  │  │  └─📄 role.guard.ts
+ │  │  ├─📄 auth.module.ts
+ │  │  ├─📄 auth.service.spec.ts
+ │  │  ├─📄 auth.service.ts
+ │  │  └─📄 constants.ts
+ │  ├─📂 common
+ │  │  └─📄 base-common.entity.ts
+ │  ├─📂 decorators
+ │  │  └─📄 roles.decorator.ts
+ │  ├─📂 enums
+ │  │  └─📄 user.role.enum.ts
+ │  ├─📂 users
+ │  │  ├─📂 dto
+ │  │  │  ├─📄 create-user.dto.spec.ts
+ │  │  │  ├─📄 create-user.dto.ts
+ │  │  │  ├─📄 login-user.dto.ts
+ │  │  │  ├─📄 read-user.dto.ts
+ │  │  │  └─📄 update-user.dto.ts
+ │  │  ├─📄 user.entity.ts
+ │  │  ├─📄 users.controller.spec.ts
+ │  │  ├─📄 users.controller.ts
+ │  │  ├─📄 users.module.ts
+ │  │  ├─📄 users.repository.spec.ts
+ │  │  ├─📄 users.repository.ts
+ │  │  ├─📄 users.service.spec.ts
+ │  │  └─📄 users.service.ts
+ │  ├─📄 app.controller.spec.ts
+ │  ├─📄 app.controller.ts
+ │  ├─📄 app.module.ts
+ │  ├─📄 app.service.ts
+ │  └─📄 main.ts
+ ├─📂 test
+ │  ├─📄 app.e2e-spec.ts
+ │  └─📄 jest-e2e.json
+ ├─📄 .eslintrc.js
+ ├─📄 .gitignore
+ ├─📄 .prettierrc
+ ├─📄 README.MD
+ ├─📄 docker-compose.yml
+ ├─📄 nest-cli.json
+ ├─📄 ormconfig.json
+ ├─📄 package-lock.json
+ ├─📄 package.json
+ ├─📄 tsconfig.build.json
+ └─📄 tsconfig.json
+
+```
+
+<br>
+<br>
 
 ## Reference
 
