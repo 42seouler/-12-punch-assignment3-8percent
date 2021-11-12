@@ -167,16 +167,50 @@
 | column name   | 컬럼 이름   | data type   | 제약조건  | 이유     |
 | ------------ | --------- | ----------- | -------- |-------- |
 | account      | 계좌번호    | BIGINT      | PK, FK   | -
-| date         | 수정시각    | DATETIME    | PK       | MySQL 에서 account 와 같이 clustered index 를 생각하여 PK 설정.
-| recordAmount | 잔액       | BIGINT      | NotNull  | -
+| date         | 거래일시    | DATETIME    | PK       | MySQL 에서 account 와 같이 clustered index 를 생각하여 PK 설정.
+| recordAmount | 거래금액    | BIGINT      | NotNull  | -
 | balance      | 잔액       | BIGINT      | NotNull  | -
-| recordType   | 만든시각    | CHAR(2)     | NotNull  | MySQL 환경에서는 enum 타입이지만 SQLite 환경에서는 enum 타입이 불가능하여 '출금', '입금' 2개의 단어만을 받을 수 있는 크기 설정.
-| note         | 유저 아이디 | VARCHAR(7)   |         | 실제 은행들에서 최대 7글자만 기록한다는 것을 보고 최대 크기를 정함.
+| recordType   | 출/입금    | CHAR(2)     | NotNull  | MySQL 환경에서는 enum 타입이지만 SQLite 환경에서는 enum 타입이 불가능하여 '출금', '입금' 2개의 단어만을 받을 수 있는 크기 설정.
+| note         | 적요    | VARCHAR(7)   |         | 실제 은행들에서 최대 7글자만 기록한다는 것을 보고 최대 크기를 정함.
 
 ##📌 구현 기능
 
 <br>
 <br>
+
+## 가산점
+#### Unit test의 구현
+
+#### Functional Test 의 구현 (입금, 조회, 출금에 대한 시나리오 테스트)
+
+#### 거래내역이 1억건을 넘어갈 때에 대한 고려
+- 입력 순서대로 10만건의 데이터가 저장되어 있는 데이터베이스에서 조회 시간 </br>
+<img src="https://user-images.githubusercontent.com/61304585/141457063-998c799c-6f49-4fef-83f6-e30bba687c19.png" width="300"/> </br>
+
+- 고려 (1) </br>
+<img src="https://user-images.githubusercontent.com/61304585/141457610-9175135a-4bc9-42b5-93d9-25548ef3debf.png" width="300"/> </br>
+로컬 PC의 사양이 좋지 않아 1억 건의 테스트는 못 하였지만 10만 건의 데이터를 가지고 테스트 해보았습니다. </br>
+클러스터드 인덱스를 활용하려는 생각을 했습니다. 한 계좌의 거래내역 조회는 한 건의 결과가 아닌 해당 계좌의 거의 모든 값을 가져오게 됩니다. </br> 
+정렬이 없는 테이블에서 조건에 만족하는 데이터를 찾아 불러오는 것보다 필요한 정보가 모여 정렬되어 있는 곳에서 한 번에 가져오는 것이 성능에서 이점이 있을 거라 생각했습니다. </br>
+그렇다면 어떠한 기준으로 정렬할 것인가에 문제가 생기는데  </br>
+(계좌번호 / 거래일시 / 거래금액 / 잔액 / 거래종류 / 적요) 중에서 인증 절차를 거쳐야 알 수 있는 정보인 계좌번호를 선택하였고, </br>
+PK로 선택한 계좌번호의 중복을 피할 수 없어서 같은 계좌번호로 중복이 나올 수 없는 ‘거래일시’ 를 같이 PK 로 설정하였습니다. </br>
+클러스터드 인덱스를 사용하게 되면 삽입, 삭제, 수정 시 재배열 문제가 있을 수 있지만 거래내역에서 삭제, 수정은 이루어지지 않고, 요즘 활성화된 핀테크에서 금융 정보를 제공해 주는 상황이라면  </br>
+여러 곳에서의 조회 요청에 대해 빠른 응답을 해줄 수 있는 클러스터 인덱스를 선택하는 것이 더 좋은 결과가 있을 것이라 생각되어 ‘계좌번호’ 와 ‘거래일시’에 PK 값을 사용했습니다.  </br>
+
+고려 (2)
+
+문제: FK는 데이터베이스 유지를 깨끗하게 해주지만 건수가 커질 수록 조회 속도가 매우 느려집니다.
+해결: FK를 제거한 entity를 생성하는 방법이 있습니다.
+방법: 
+1) 아래와 같이 createForeignKeyConstraints를 false으로 해서 FK를 제거합니다.
+```
+@@ManyToOne(() => Account, { createForeignKeyConstraints: false })
+```
+2) Index값을 records(거래내역) entity의 "account"와 "date"에 추가했습니다. Index를 추가하면 insert나 delete은 더 느리지만 read할 때는 상대적으로 굉장한 속도를 낼 수 있는 이유는 insert할 때 data를 정리해서 저장하기 때문입니다. 해당 프로젝트 같은 경우는 계좌 번호와 날짜로 정리가 됐습니다.
+```
+@Index(['account', 'date'])
+```
 
 ## 📖 API Document
 

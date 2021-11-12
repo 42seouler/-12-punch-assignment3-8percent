@@ -5,8 +5,8 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { RecordOrder } from 'src/enums/record.order.enum';
-import { RecordType } from 'src/enums/record.type.enum';
+import { RecordOrder } from '../../enums/record.order.enum';
+import { RecordType } from '../../enums/record.type.enum';
 
 export class FindAllDto {
   @IsOptional()
