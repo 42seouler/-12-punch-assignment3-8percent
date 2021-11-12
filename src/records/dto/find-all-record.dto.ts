@@ -10,11 +10,9 @@ import { RecordType } from '../../enums/record.type.enum';
 
 export class FindAllDto {
   @IsOptional()
-  @IsNumber()
   limit: number;
 
   @IsOptional()
-  @IsNumber()
   offset: number;
 
   @IsNotEmpty()
