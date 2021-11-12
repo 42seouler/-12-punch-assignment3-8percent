@@ -18,60 +18,97 @@ export class RecordsService {
     private connection: Connection
   ) {}
 
-  async create(createRecordDto: CreateRecordDto, user: any): Promise<Record> {
+  async createDeposit(createRecordDto: CreateRecordDto, user: any): Promise<Record> {
     
+    let { account, recordAmount, note } = createRecordDto;
+    note = note || '';
+
     //계좌인증
-    const myAccount = await this.accountRepository.findOne({
-      where: { accountNum: createRecordDto.account, userId: user.userId },
+    let myAccount = await this.accountRepository.findOne({
+      where: { accountNum: account, userId: user.userId },
     });
     if(!myAccount) throw new UnauthorizedException('본인확인 실패');
 
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {      
+        
+      myAccount.balance = myAccount.balance+recordAmount;   
+      
+      const savedAccount = await queryRunner.manager
+      .getRepository(Account)
+      .save(myAccount);
+
+      const record = queryRunner.manager.getRepository(Record).create({
+        ...createRecordDto,
+        balance : savedAccount.balance,
+        note : note,
+        recordType : RecordType.deposit,
+        date: new Date()
+      });
+
+      const createdRecord = await queryRunner.manager
+      .getRepository(Record)
+      .save(record);
+      
+      await queryRunner.commitTransaction();
+      return createdRecord;
+     
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }  
+
+  }
+
+  
+  async createWithdraw(createRecordDto: CreateRecordDto, user: any): Promise<Record> {
+    
+    let { account, recordAmount, note } = createRecordDto;
+    note = note || '';
+
+    //계좌인증
+    let myAccount = await this.accountRepository.findOne({
+      where: { accountNum: account, userId: user.userId },
+    });
+    if(!myAccount) throw new UnauthorizedException('본인확인 실패');
 
     const queryRunner = this.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      let { account, recordAmount, recordType } = createRecordDto;
 
-      // 계좌 존재여부 조회
-      let existingAccount = await queryRunner.manager
-      .getRepository(Account)
-      .findOne(account);
+        //잔액 검사     
+        if(myAccount.balance >= recordAmount){ 
+          myAccount.balance = myAccount.balance-recordAmount; 
+        }else{ 
+          throw new PreconditionFailedException('insufficient balance');
+        }    
+        
+        const savedAccount = await queryRunner.manager
+        .getRepository(Account)
+        .save(myAccount);
 
-      if(!existingAccount) {
-        throw new NotFoundException(`Account with ${account} not found`);
-      } else {     
-          if(recordType == RecordType.deposit) {
-            existingAccount.balance = existingAccount.balance + recordAmount;   
-          }
-          
-          else if (recordType == RecordType.withdraw) {   
-            //잔액 검사     
-            if(existingAccount.balance >= recordAmount)  
-              existingAccount.balance = existingAccount.balance - recordAmount; 
-            else
-              throw new PreconditionFailedException('insufficient balance');
-          }
+        const record = queryRunner.manager.getRepository(Record).create({
+          ...createRecordDto,
+          balance : savedAccount.balance,
+          note : note,
+          recordType : RecordType.withdraw,
+          date: new Date()
+        });
 
-          const savedAccount = await queryRunner.manager
-            .getRepository(Account)
-            .save(existingAccount);
-
-          const record = queryRunner.manager.getRepository(Record).create({
-            ...createRecordDto,
-            balance: savedAccount.balance,
-            note: createRecordDto.note || '',
-            date: new Date(Date.now())
-          });
-
-          const createdRecord = await queryRunner.manager
-            .getRepository(Record)
-            .save(record);
-          
-          await queryRunner.commitTransaction();
-          return createdRecord;
-      }
+        const createdRecord = await queryRunner.manager
+        .getRepository(Record)
+        .save(record);
+        
+        await queryRunner.commitTransaction();
+        return createdRecord;
+    
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;
