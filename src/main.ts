@@ -17,6 +17,7 @@ async function bootstrap() {
     .setTitle('8Percentx원투펀치팀')
     .setDescription('프로젝트 기본 유저까지! 테스트 코드는 조금씩 추가 예정..')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

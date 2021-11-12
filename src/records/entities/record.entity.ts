@@ -5,9 +5,8 @@ import { Column, ManyToOne, Index, Entity, JoinColumn, PrimaryColumn } from 'typ
 @Index(['account', 'date'])
 export class Record {
 
-  @PrimaryColumn({ type: 'unsigned big int' })
-  @ManyToOne(() => Account, { createForeignKeyConstraints: false })
-  @JoinColumn({ name: 'account', referencedColumnName: 'account' })
+  @Index()
+  @Column()
   account: number;
 
   @PrimaryColumn()
