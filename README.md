@@ -138,7 +138,8 @@
 
 ### [Etc.]
 
-<br>
+<img src="https://user-images.githubusercontent.com/67426853/141493982-c2aff600-1bb0-4beb-981f-382c521d20c3.png" width=700>
+
 <br>
 
 ## DB Schema
