@@ -8,6 +8,8 @@ import { Account } from '../accounts/entities/account.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Record, Account]),
+    TypeOrmModule.forFeature([Record, Account], 'odd'),
+    TypeOrmModule.forFeature([Record, Account], 'even'),
   ],
   exports: [TypeOrmModule],
   controllers: [RecordsController],

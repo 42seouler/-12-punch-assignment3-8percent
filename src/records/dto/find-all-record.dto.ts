@@ -9,7 +9,6 @@ import { RecordOrder } from '../../enums/record.order.enum';
 import { RecordType } from '../../enums/record.type.enum';
 import { ApiProperty,ApiPropertyOptional } from '@nestjs/swagger';
 
-
 export class FindAllDto {
   
   @ApiPropertyOptional()

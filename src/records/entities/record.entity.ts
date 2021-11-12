@@ -1,10 +1,8 @@
-import { Account } from '../../accounts/entities/account.entity';
-import { Column, ManyToOne, Index, Entity, JoinColumn, PrimaryColumn } from 'typeorm'
+import { Column, Index, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 @Index(['account', 'date'])
 export class Record {
-
   @Index()
   @Column()
   account: number;
