@@ -11,35 +11,35 @@ import { RecordType } from 'src/enums/record.type.enum';
 export class FindAllDto {
   @IsOptional()
   @IsNumber()
-  limit?: number;
+  limit: number;
 
   @IsOptional()
   @IsNumber()
-  offset?: number;
+  offset: number;
 
   @IsNotEmpty()
   // @IsNumber()
   account: number;
 
   @IsOptional()
-  from?: Date;
+  from: Date;
 
   @IsOptional()
-  to?: Date;
-
-  @IsOptional()
-  @IsString()
-  year?: string;
+  to: Date;
 
   @IsOptional()
   @IsString()
-  month?: string;
+  year: string;
+
+  @IsOptional()
+  @IsString()
+  month: string;
 
   @IsOptional()
   @IsEnum(RecordType)
-  type?: RecordType;
+  type: RecordType;
 
   @IsOptional()
   @IsEnum(RecordOrder)
-  order?: RecordOrder;
+  order: RecordOrder;
 }
