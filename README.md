@@ -144,8 +144,8 @@
 ## DB Schema
 <img src="https://user-images.githubusercontent.com/61304585/141412331-fc5eb73b-7d3e-417c-8aa2-17dd9f4a38e9.png" width="700"/> </br>
 ### User Table
-| colmn name | 컬럼 이름   | data type   | 제약조건  | 이유     |
-| ---------- | --------- | ----------- | -------- |-------- |
+| column name | 컬럼 이름   | data type   | 제약조건  | 이유    |
+| ---------- | ---------- | ----------- | -------- |-------- |
 | id         | 유저 아이디 | INT         | PK       | 2021년도 인구수가 약 5,200만 명 되는데 INT 타입을 사용하면 약 43억까지 수용이 가능하므로 INT를 사용함.
 | name       | 이름       | VARCHAR(10) | NotNull  | 법적으로 성을 제외한 이름이 5글자로 정해져있어 외국 이름을 고려하여 10글자까지 가능하게 타입을 잡음.
 | password   | 비밀번호    | VARCHAR(45) | NotNull  | -
@@ -153,7 +153,27 @@
 | updated_at | 수정시각    | DATETIME    | NotNull  | 값 자동 부여
 </br>
 
-## 📌 구현 기능
+### Account Table
+| column name | 컬럼 이름   | data type   | 제약조건  | 이유     |
+| ---------- | -----------| ----------- | -------- |-------- |
+| account    | 계좌번호    | BIGINT      | PK       | 최대 20자리까지 표현하는 데이터 타입. |
+| balance    | 잔액        | BIGINT      | NotNull  | INT 타입은 42억 9천만 원까지밖에 표현을 못 하여 돈 관련 모든 column은 BIGINT 타입으로 설정.
+| created_at | 만든시각    | DATETIME    | NotNull  | 값 자동 부여, 계좌 생성 날짜 기록.
+| updated_at | 수정시각    | DATETIME    | NotNull  | 값 자동 부여, Account 테이블 중에서 balance 잔액만이 변동이 되는데 마지막 업데이트 시간을 기록하기 위함.
+| userId     | 유저 아이디 | INT         | FK       | -
+</br>
+
+### Record Table
+| column name   | 컬럼 이름   | data type   | 제약조건  | 이유     |
+| ------------ | --------- | ----------- | -------- |-------- |
+| account      | 계좌번호    | BIGINT      | PK, FK   | -
+| date         | 수정시각    | DATETIME    | PK       | MySQL 에서 account 와 같이 clustered index 를 생각하여 PK 설정.
+| recordAmount | 잔액       | BIGINT      | NotNull  | -
+| balance      | 잔액       | BIGINT      | NotNull  | -
+| recordType   | 만든시각    | CHAR(2)     | NotNull  | MySQL 환경에서는 enum 타입이지만 SQLite 환경에서는 enum 타입이 불가능하여 '출금', '입금' 2개의 단어만을 받을 수 있는 크기 설정.
+| note         | 유저 아이디 | VARCHAR(7)   |         | 실제 은행들에서 최대 7글자만 기록한다는 것을 보고 최대 크기를 정함.
+
+##📌 구현 기능
 
 <br>
 <br>
