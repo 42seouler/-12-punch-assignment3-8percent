@@ -19,7 +19,7 @@
 | 이름   | github                                          | 담당 기능 | TIL/회고 |
 | ------ | ----------------------------------------------- | --------- | -------- |
 | 김남형 | [42seouler](https://github.com/)                |           |          |
-| 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API |          |
+| 김서경 | [riley909](https://github.com/riley909)         |           |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           |           |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) |           |          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     |           |          |
@@ -132,14 +132,13 @@
 
 ## 🛠 사용 기술 및 Tools
 
-### [Back-End] ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
+### [Back-End]
 
-### [Deploy] <img src="https://img.shields.io/badge/AWS_EC2-232F3E?style=for-the-badge&logo=Amazon&logoColor=white"/>
+### [Deploy]
 
-### [Etc.] <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
+### [Etc.]
 
-<img src="https://user-images.githubusercontent.com/67426853/141493982-c2aff600-1bb0-4beb-981f-382c521d20c3.png" width=700>
-
+<br>
 <br>
 
 ## DB Schema
@@ -174,8 +173,7 @@
 | recordType   | 출/입금    | CHAR(2)     | NotNull  | MySQL 환경에서는 enum 타입이지만 SQLite 환경에서는 enum 타입이 불가능하여 '출금', '입금' 2개의 단어만을 받을 수 있는 크기 설정.
 | note         | 적요    | VARCHAR(7)   |         | 실제 은행들에서 최대 7글자만 기록한다는 것을 보고 최대 크기를 정함.
 
-
-## 📌 구현 기능
+##📌 구현 기능
 
 <br>
 <br>
@@ -214,18 +212,12 @@ PK로 선택한 계좌번호의 중복을 피할 수 없어서 같은 계좌번�
 @Index(['account', 'date'])
 ```
 
-## 📖 API Document
-
-[🔗 Postman Document]()
-
 ### API Test 방법
 
-1. 다음 링크로 이동합니다. [postman 링크]()
-2. user폴더 안의 회원가입, 로그인 요청을 통하여 accessToken을 획득합니다.
-3. 권한이 필요한 api 요청 시 header의 Authorization 항목에 accessToken을 입력하여 요청할 수 있습니다.
-
-- 로그인, 회원가입을 제외한 api 호출시 accessToken이 필요합니다.
-
+1. 다음 링크로 이동합니다. [swagger 링크](http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/)
+2. user 탭의 회원가입, auth 탭의 로그인 요청을 통하여 accessToken을 획득합니다.
+3. 권한이 필요한 api는 별도의 자물쇠 아이콘이 표기되어 있습니다. 자물쇠 아이콘을 클릭한 후, 로그인 시 획득한 accessToken을 입력하면 해당 api를 요청할 수 있습니다.
+<img src="https://user-images.githubusercontent.com/42341135/141495860-824c8656-ce8d-438b-ab5d-0f94768d6b65.PNG" width="700"/> </br>
 <br>
 <br>
 
@@ -247,21 +239,43 @@ $ cd 12-punch-assignment4-8percent
 $ npm install
 ```
 
-3. 서버를 구동합니다.
+<span style="color:red"><b>[수정]</b> 3. src 폴더에 .env 파일을 만들어 환경변수를 설정합니다.</span>
+
+- [.env설정 노션 링크]()
+- <details><summary><b>링크 접속불가 시 .env 파일 설정 방법</b></summary>
+
+  ```
+  MONGO_URL= 'db 주소'
+  PORT= '서버의 포트'
+  JWT_SECERT= '원하는 시크릿코드'
+  JWT_ALGO="HS256"
+  ```
+
+</details>
+
+4. 서버를 구동합니다.
 
 ```bash
 $ npm start
 ```
 
-<span style="color:red"><b>[수정]</b>5. Unit test를 진행합니다.</span>
+<span style="color:red"><b>[수정]</b>5. Unit test 및 End-to-End test를 진행합니다.</span>
 
 ```bash
 # unit tests
 $ npm run test
 
+# e2e tests
+$ npm run test:e2e
+
 # test coverage
 $ npm run test:cov
 ```
+
+</br>
+</br>
+
+## 😺 컨벤션 설정
 
 </br>
 </br>
