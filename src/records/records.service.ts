@@ -74,5 +74,6 @@ export class RecordsService {
       const records = await query.getMany();
       return records;
     } catch (err) {}
+
   }
 }

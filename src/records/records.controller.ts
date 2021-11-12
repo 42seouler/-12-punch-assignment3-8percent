@@ -25,5 +25,6 @@ export class RecordsController {
   @Get()
   findAll(@Query() findAllDto: FindAllDto) {
     return this.recordsService.findAll(findAllDto);
+
   }
 }

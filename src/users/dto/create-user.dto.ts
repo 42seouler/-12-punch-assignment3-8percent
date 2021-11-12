@@ -1,14 +1,16 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
 export class CreateUserDto {
-  @IsEmail()
+  
   @Expose()
   @ApiProperty()
-  email: string;
-
+  @IsString()
+  name: string;
+  
   @IsNotEmpty()
+  @IsString()
   @MinLength(10, {
     message: 'password must be at least 10 characters',
     context: {

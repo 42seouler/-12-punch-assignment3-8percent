@@ -10,6 +10,7 @@ import { Account } from 'src/accounts/entities/account.entity';
     TypeOrmModule.forFeature([Record]),
     TypeOrmModule.forFeature([Account]),
   ],
+  exports: [TypeOrmModule],
   controllers: [RecordsController],
   providers: [RecordsService],
 })

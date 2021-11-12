@@ -1,33 +1,23 @@
-import { Account } from 'src/accounts/entities/account.entity';
-import {
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  ManyToOne,
-  Entity,
-} from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Record {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  // @ManyToOne(() => Account, (account) => account.accountNum)
-  @Column()
+  @PrimaryColumn({ type: 'unsigned big int' })
+  // @ManyToOne()
   account: number;
 
-  @CreateDateColumn()
+  @PrimaryColumn()
   date: Date;
 
-  @Column()
+  @Column({ type: 'unsigned big int' })
   recordAmount: number;
 
   @Column()
   recordType: string;
 
-  @Column()
+  @Column({ type: 'unsigned big int' })
   balance: number;
 
-  @Column()
+  @Column('varchar', { length: 7 })
   note: string;
 }

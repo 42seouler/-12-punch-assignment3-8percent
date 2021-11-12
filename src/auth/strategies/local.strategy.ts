@@ -8,7 +8,7 @@ import { ModuleRef } from '@nestjs/core';
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService, private moduleRef: ModuleRef) {
     super({
-      usernameField: 'email',
+      usernameField: 'name',
       passwordField: 'password',
     });
   }
