@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -9,7 +17,11 @@ export class AccountsController {
 
   @Post()
   create(@Body() createAccountDto: CreateAccountDto) {
-    return this.accountsService.create(createAccountDto);
+    const save = {
+      account: createAccountDto.account,
+      balance: 0, // 초기 계좌 잔액 0원
+    };
+    return this.accountsService.create(save);
   }
 
   @Get()
