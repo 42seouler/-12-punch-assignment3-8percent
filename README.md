@@ -142,8 +142,15 @@
 <br>
 
 ## DB Schema
-
-</br>
+<img src="https://user-images.githubusercontent.com/61304585/141412331-fc5eb73b-7d3e-417c-8aa2-17dd9f4a38e9.png" width="700"/> </br>
+### User Table
+| colmn name | 컬럼 이름   | data type   | 제약조건  | 이유     |
+| ---------- | --------- | ----------- | -------- |-------- |
+| id         | 유저 아이디 | INT         | PK       | 2021년도 인구수가 약 5,200만 명 되는데 INT 타입을 사용하면 약 43억까지 수용이 가능하므로 INT를 사용함.
+| name       | 이름       | VARCHAR(10) | NotNull  | 법적으로 성을 제외한 이름이 5글자로 정해져있어 외국 이름을 고려하여 10글자까지 가능하게 타입을 잡음.
+| password   | 비밀번호    | VARCHAR(45) | NotNull  | -
+| created_at | 만든시각    | DATETIME    | NotNull  | 값 자동 부여
+| updated_at | 수정시각    | DATETIME    | NotNull  | 값 자동 부여
 </br>
 
 ## 📌 구현 기능
