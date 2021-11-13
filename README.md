@@ -181,6 +181,15 @@
 
 1. 다음 링크로 이동합니다. [swagger 링크](http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/)
 2. user 탭의 회원가입, auth 탭의 로그인 요청을 통하여 accessToken을 획득합니다.
+- 테스트 위해서 user를 미리 생성했습니다
+- {
+    "name": "test",
+    "password": "testtest123"
+  }
+- {
+    "name": "test2",
+    "password": "testtest123"
+  }
 3. 권한이 필요한 api는 별도의 자물쇠 아이콘이 표기되어 있습니다. 자물쇠 아이콘을 클릭한 후, 로그인 시 획득한 accessToken을 입력하면 해당 api를 요청할 수 있습니다.</br>
 <img src="https://user-images.githubusercontent.com/42341135/141495860-824c8656-ce8d-438b-ab5d-0f94768d6b65.PNG" width="500"/> </br>
 <br>
