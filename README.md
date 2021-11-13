@@ -22,7 +22,7 @@
 | 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API, 유저 CRUD |          |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           | 유닛테스트 작성, DB설계     |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) | DB설계, entity 작성 |          |
-| 최유진 | [n12seconds](https://github.com/n12seconds)     | 입금,출금 API, JWT |          |
+| 최유진 | [n12seconds](https://github.com/n12seconds)     | 입금,출금 API, JWT로그인 |          |
 
 </div>
 
