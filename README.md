@@ -276,7 +276,7 @@ SQLite의 기본 격리 수준은 SERIALIZABLE입니다. SQLite는 실제로 쓰
 하지만 다행히 sqlite는 인덱싱을 지원합니다. 따라서 효율성을 높이기 위해 쿼리 빈도가 높은 필드인 계좌번호에 인덱싱을 했습니다.
 
 ### 무결성을 보존하기 위한 로직 </br>
-<img src="https://images.velog.io/images/42seouler/post/b93eeec3-1bf7-411b-b1f0-be5423520863/image.png" width="500"/> </br>
+<img src="https://images.velog.io/images/42seouler/post/025b8082-8321-4afd-83a0-f8f9df3b9b6d/image.png" width="500"/> </br>
 
 ### 하지만 실제 구현은! </br>
 <img src="https://images.velog.io/images/42seouler/post/a41aa83f-399c-40be-8f46-5a8ff2a956fb/image.png" width="500"/> </br>
