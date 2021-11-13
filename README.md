@@ -31,6 +31,9 @@
 <br>
 <br>
 
+## Swagger 접속 URL
+http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/
+
 ## 📖 과제 내용
 
 ### [필수 포함 사항]
