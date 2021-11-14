@@ -19,7 +19,7 @@
 | 이름   | github                                          | 담당 기능 | TIL/회고 |
 | ------ | ----------------------------------------------- | --------- | -------- |
 | 김남형 | [42seouler](https://github.com/)                | DB분산 저장, 계좌API, 유닛 테스트          |          |
-| 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API, 유저 CRUD |          |
+| 김서경 | [riley909](https://github.com/riley909)         | 거래내역 조회 API, 유저 CRUD | [8퍼센트 기술과제 회고](https://yummy-error-929.notion.site/Pre-Onboarding-8-938e8f3300bf40fe972ed5883101f1fd) |
 | 김요셉 | [kim-jos](https://github.com/kim-jos)           | 유닛테스트 작성, DB설계     |          |
 | 정천우 | [codehousepig](https://github.com/codehousepig) | DB설계, entity 작성 |  [codehousepig](https://blog.naver.com/codehouse9/222567074892)          |
 | 최유진 | [n12seconds](https://github.com/n12seconds)     | 입금,출금 API, JWT로그인 |          |
