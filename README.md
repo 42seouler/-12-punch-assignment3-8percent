@@ -141,6 +141,8 @@ http://ec2-3-36-50-211.ap-northeast-2.compute.amazonaws.com:3000/api/
 
 ### [Etc.] <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
 
+<img src="https://user-images.githubusercontent.com/67426853/141734049-82975113-b929-4f87-b66c-80a30ef84c99.png" width=700>
+
 
 <br>
 <br>
